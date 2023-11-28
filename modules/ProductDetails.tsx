@@ -18,6 +18,7 @@ import {
   Button,
   Image,
   TouchableOpacity,
+  ImageBackground,
 } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -75,6 +76,9 @@ const ProductDetails = (props: productData) => {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
+            borderBottomWidth: 1,
+            paddingBottom: 15,
+            paddingTop: 15,
           }}
         >
           <TouchableOpacity
@@ -82,7 +86,7 @@ const ProductDetails = (props: productData) => {
               props.toggleScanned(false);
             }}
           >
-            <View style={{ width: 50, height: 50 }}>
+            <View style={{ width: 30, height: 30, marginLeft: 20 }}>
               <SvgXml
                 xml={leftSvg}
                 width="100%"
@@ -93,13 +97,15 @@ const ProductDetails = (props: productData) => {
               ></SvgXml>
             </View>
           </TouchableOpacity>
-          <Text>Dzik Energy Mango</Text>
+          <Text style={{ fontFamily: "Roboto-Regular", fontSize: 24 }}>
+            Dzik Energy Mango
+          </Text>
           <TouchableOpacity
             onPress={() => {
               toggleFavourite(!isFavourite);
             }}
           >
-            <View style={{ width: 50, height: 50 }}>
+            <View style={{ width: 30, height: 30, marginRight: 20 }}>
               <SvgXml
                 xml={isFavourite ? filledHeartSvg : heartSvg}
                 width="100%"
@@ -113,98 +119,154 @@ const ProductDetails = (props: productData) => {
         </View>
       </View>
       <ScrollView>
-        <View style={{ margin: 0, padding: 0 }}>
-          <Image
-            source={require("./png/png-transparent-spider-man-heroes-download-with-transparent-background-free-thumbnail.png")}
-            style={{ borderRadius: 30, borderWidth: 3, borderColor: "red" }}
-          />
+        <ImageBackground
+          source={require("./png/png-transparent-spider-man-heroes-download-with-transparent-background-free-thumbnail.png")}
+          style={{
+            marginTop: 20,
+            width: windowWidth - 40,
+            height: 300,
+            marginLeft: 20,
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+          }}
+          imageStyle={{
+            width: windowWidth - 40,
+            height: 300,
+            borderWidth: 5,
+            borderRadius: 20,
+            borderColor: "#32B960",
+          }}
+        >
           <View
+            style={{ flexDirection: "row", marginBottom: 10, marginRight: 20 }}
+          >
+            <Progress.Circle
+              borderWidth={0}
+              size={70}
+              progress={1}
+              thickness={5}
+              fill="white"
+              animated={false}
+              strokeCap="square"
+              color="#a5cfb6"
+              style={{
+                backgroundColor: "white",
+                borderRadius: 100,
+                padding: 5,
+              }}
+            />
+            <Progress.Circle
+              borderWidth={0}
+              size={70}
+              progress={0.9}
+              thickness={5}
+              animated={false}
+              strokeCap="square"
+              color="#2b9454"
+              showsText={true}
+              formatText={(progress) => {
+                return "9.5";
+              }}
+              textStyle={{
+                color: "#2b9454",
+                textAlign: "center",
+                fontFamily: "Roboto-Bold",
+                fontSize: 20,
+              }}
+              style={{ marginLeft: -75, marginTop: 5 }}
+            />
+          </View>
+        </ImageBackground>
+        <View style={{ paddingLeft: 20, paddingRight: 20 }}>
+          <Text
             style={{
-              backgroundColor: "white",
-              width: 110,
-              height: 110,
-              top: -120,
-              right: -240,
-              margin: 0,
-              padding: 0,
-              borderRadius: 55,
+              textAlign: "center",
+              fontFamily: "Roboto-Regular",
+              fontSize: 18,
             }}
-          ></View>
-          <Progress.Circle
-            borderWidth={0}
-            size={100}
-            progress={0.9}
-            animated={false}
-            strokeCap="square"
-            endAngle={0.3}
-            style={{
-              transform: [{ rotate: "180deg" }],
-              top: -225,
-              left: -47.5,
-            }}
-          />
-          <Text style={{ top: -290, right: -285 }}>9.5</Text>
-        </View>
-        <View style={{ top: -220 }}>
-          <Text>
+          >
             Gazowany napój energetyczny o smaku mango i dużej zawarotści kofieny
           </Text>
-          <Text>Dodaj produkt do posiłku</Text>
-          <Text>Składniki:</Text>
-          <Text>
-            woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,woda,
+          <Text
+            style={{
+              fontFamily: "Roboto-Bold",
+              fontSize: 16,
+              color: "#2b9454",
+              textAlign: "center",
+            }}
+          >
+            Dodaj produkt do posiłku
           </Text>
-          <Text>Zdrowe</Text>
+          <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16 }}>
+            Składniki:
+          </Text>
+          <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>
+            woda, kwas cytrynowy, dwutlenek węgla, tauryna (0.4%), cytrynian
+            sodu, aromaty, ekstrakt żeń-szenia (0.08%), sukraloza, acesulfam K,
+            winian L-karnitynyn (0.04%), kofeina (0.04%), chlorek sodu,
+            sorbinian potasu, benzoesan sodu, barwnik (karmel), niacyna,
+            witamina B6, ryboflawina, witamina B12, glukulonorakton, ekstrakt z
+            guarany (0.002%), inotyzol.
+          </Text>
+          <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16 }}>
+            Zdrowe
+          </Text>
           <View
             style={{
               flexDirection: "row",
               flexWrap: "wrap",
             }}
           >
-            <Attributes text="Woda" color="green"></Attributes>
-            <Attributes text="Woda" color="green"></Attributes>
-            <Attributes text="Woda" color="green"></Attributes>
-            <Attributes text="Woda" color="green"></Attributes>
-            <Attributes text="Woda" color="green"></Attributes>
+            <Attributes text="Woda" color="#C9F7D9"></Attributes>
+            <Attributes text="Woda" color="#C9F7D9"></Attributes>
+            <Attributes text="Woda" color="#C9F7D9"></Attributes>
+            <Attributes text="Woda" color="#C9F7D9"></Attributes>
+            <Attributes text="Woda" color="#C9F7D9"></Attributes>
           </View>
-          <Text>Bezpieczne</Text>
+          <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16 }}>
+            Bezpieczne
+          </Text>
           <View
             style={{
               flexDirection: "row",
               flexWrap: "wrap",
             }}
           >
-            <Attributes text="Woda" color="yellow"></Attributes>
-            <Attributes text="Woda" color="yellow"></Attributes>
-            <Attributes text="Woda" color="yellow"></Attributes>
-            <Attributes text="Woda" color="yellow"></Attributes>
-            <Attributes text="Woda" color="yellow"></Attributes>
+            <Attributes text="Woda" color="#F9E8A9"></Attributes>
+            <Attributes text="Woda" color="#F9E8A9"></Attributes>
+            <Attributes text="Woda" color="#F9E8A9"></Attributes>
+            <Attributes text="Woda" color="#F9E8A9"></Attributes>
+            <Attributes text="Woda" color="#F9E8A9"></Attributes>
           </View>
-          <Text>Podejrzane</Text>
+          <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16 }}>
+            Podejrzane
+          </Text>
           <View
             style={{
               flexDirection: "row",
               flexWrap: "wrap",
             }}
           >
-            <Attributes text="Woda" color="orange"></Attributes>
-            <Attributes text="Woda" color="orange"></Attributes>
-            <Attributes text="Woda" color="orange"></Attributes>
-            <Attributes text="Woda" color="orange"></Attributes>
-            <Attributes text="Woda" color="orange"></Attributes>
+            <Attributes text="Woda" color="#F8CB96"></Attributes>
+            <Attributes text="Woda" color="#F8CB96"></Attributes>
+            <Attributes text="Woda" color="#F8CB96"></Attributes>
+            <Attributes text="Woda" color="#F8CB96"></Attributes>
+            <Attributes text="Woda" color="#F8CB96"></Attributes>
           </View>
-          <Text>Szkodliwe</Text>
+          <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16 }}>
+            Szkodliwe
+          </Text>
           <View
             style={{
               flexDirection: "row",
               flexWrap: "wrap",
             }}
           >
-            <Attributes text="Woda" color="red"></Attributes>
-            <Attributes text="Woda" color="red"></Attributes>
-            <Attributes text="Woda" color="red"></Attributes>
-            <Attributes text="Woda" color="red"></Attributes>
-            <Attributes text="Woda" color="red"></Attributes>
+            <Attributes text="Woda" color="#E89797"></Attributes>
+            <Attributes text="Woda" color="#E89797"></Attributes>
+            <Attributes text="Woda" color="#E89797"></Attributes>
+            <Attributes text="Woda" color="#E89797"></Attributes>
+            <Attributes text="Woda" color="#E89797"></Attributes>
           </View>
           <TouchableOpacity
             onPress={() => {
@@ -212,7 +274,15 @@ const ProductDetails = (props: productData) => {
             }}
           >
             <View style={{ flexDirection: "row" }}>
-              <Text>Wartości odżywcze</Text>
+              <Text
+                style={{
+                  color: "#2b9454",
+                  fontFamily: "Roboto-Regular",
+                  fontSize: 16,
+                }}
+              >
+                Wartości odżywcze
+              </Text>
               <View style={{ width: 10, height: 10 }}>
                 <SvgXml
                   xml={chevronsvg}

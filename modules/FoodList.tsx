@@ -70,6 +70,7 @@ const FoodList = (props: foodLists) => {
               backgroundColor: "white",
               shadowColor: "white",
             },
+            lazy: false,
           }}
         >
           <Tab.Screen

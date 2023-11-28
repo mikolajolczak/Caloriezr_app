@@ -47,7 +47,7 @@ const App = () => {
     else {
       return (
         <NavigationContainer>
-          <Tab.Navigator screenOptions={{ tabBarStyle: { paddingHorizontal: 25 }}}>
+          <Tab.Navigator screenOptions={{ tabBarStyle: { paddingHorizontal: 25 }}} lazy={false}>
             <Tab.Screen
               name="home"
               component={Home}

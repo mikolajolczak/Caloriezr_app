@@ -66,6 +66,7 @@ const WeekTraining = (props: weekData) => {
   };
   const returnXProducts = (currentDay: Date) => {
     let output = [];
+    let j = -1;
     let startOfTheWeek: Date;
     if (currentDay.getDay() == 1) {
       startOfTheWeek = currentDay;
@@ -82,6 +83,7 @@ const WeekTraining = (props: weekData) => {
 
     for (let i = 0; i < 7; i++) {
       let currentDayMeals = [];
+
       if (props.username != null) {
         props.username.meals.every((meal) => {
           if (
@@ -95,6 +97,17 @@ const WeekTraining = (props: weekData) => {
             return true;
           }
         });
+      }
+      if (
+        j == -1 &&
+        new Date(
+          startOfTheWeek.getFullYear(),
+          startOfTheWeek.getMonth() + 1,
+          0
+        ).getDate() <
+          startOfTheWeek.getDate() + i
+      ) {
+        j = i - 1;
       }
       output[i] = (
         <Tab.Screen
@@ -111,7 +124,14 @@ const WeekTraining = (props: weekData) => {
                     style={styles.labelContainerFocused}
                   >
                     <Text style={{ color: "white", fontFamily: "Roboto-Bold" }}>
-                      {startOfTheWeek.getDate() + i}
+                      {new Date(
+                        startOfTheWeek.getFullYear(),
+                        startOfTheWeek.getMonth() + 1,
+                        0
+                      ).getDate() >=
+                      startOfTheWeek.getDate() + i
+                        ? startOfTheWeek.getDate() + i
+                        : i - j}
                     </Text>
                     <Text
                       style={{ color: "white", fontFamily: "Roboto-Light" }}
@@ -122,7 +142,14 @@ const WeekTraining = (props: weekData) => {
                 ) : (
                   <View style={styles.labelContainerUnfocused}>
                     <Text style={{ color: "grey", fontFamily: "Roboto-Bold" }}>
-                      {startOfTheWeek.getDate() + i}
+                      {new Date(
+                        startOfTheWeek.getFullYear(),
+                        startOfTheWeek.getMonth() + 1,
+                        0
+                      ).getDate() >=
+                      startOfTheWeek.getDate() + i
+                        ? startOfTheWeek.getDate() + i
+                        : i - j}
                     </Text>
                     <Text style={{ color: "grey", fontFamily: "Roboto-Light" }}>
                       {getDayOfTheWeek(startOfTheWeek.getDay() + i)}
@@ -153,7 +180,7 @@ const WeekTraining = (props: weekData) => {
     <NavigationContainer independent theme={MyTheme} ref={navigationRef}>
       <Tab.Navigator
         screenOptions={{
-          tabBarPressColor: "white",
+          tabBarPressColor: "#f9f0e9",
           tabBarIndicatorStyle: {
             width: 0,
             height: 0,
@@ -163,9 +190,10 @@ const WeekTraining = (props: weekData) => {
           swipeEnabled: false,
           animationEnabled: false,
           tabBarStyle: {
-            backgroundColor: "white",
-            shadowColor: "white",
+            backgroundColor: "#f9f0e9",
+            shadowColor: "#f9f0e9",
           },
+          lazy: false,
         }}
       >
         {returnXProducts(new Date())}

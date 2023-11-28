@@ -38,7 +38,13 @@ const Details = (props: productData) => {
             setMultiplier(1);
           }}
         >
-          <Text style={{ color: multiplier == 1 ? "green" : "black" }}>
+          <Text
+            style={{
+              color: multiplier == 1 ? "#2b9454" : "#9a9a9a",
+              fontFamily: "Roboto-Regular",
+              fontSize: 14,
+            }}
+          >
             100g
           </Text>
         </TouchableOpacity>
@@ -47,7 +53,13 @@ const Details = (props: productData) => {
             setMultiplier(2);
           }}
         >
-          <Text style={{ color: multiplier == 2 ? "green" : "black" }}>
+          <Text
+            style={{
+              color: multiplier == 2 ? "#2b9454" : "#9a9a9a",
+              fontFamily: "Roboto-Regular",
+              fontSize: 14,
+            }}
+          >
             1x szklanka
           </Text>
         </TouchableOpacity>
@@ -56,7 +68,13 @@ const Details = (props: productData) => {
             setMultiplier(0.5);
           }}
         >
-          <Text style={{ color: multiplier == 0.5 ? "green" : "black" }}>
+          <Text
+            style={{
+              color: multiplier == 0.5 ? "#2b9454" : "#9a9a9a",
+              fontFamily: "Roboto-Regular",
+              fontSize: 14,
+            }}
+          >
             0.5x opakowanie
           </Text>
         </TouchableOpacity>
@@ -65,130 +83,28 @@ const Details = (props: productData) => {
             setMultiplier(0.25);
           }}
         >
-          <Text style={{ color: multiplier == 0.25 ? "green" : "black" }}>
+          <Text
+            style={{
+              color: multiplier == 0.25 ? "#2b9454" : "#9a9a9a",
+              fontFamily: "Roboto-Regular",
+              fontSize: 14,
+            }}
+          >
             1x opakowanie
           </Text>
         </TouchableOpacity>
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
+        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>
+          Wartość energetyczna (kcal)
+        </Text>
+        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>3</Text>
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>Wartość energetyczna (kcal)</Text>
-        <Text>3</Text>
+        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>
+          Wartość energetyczna (kcal)
+        </Text>
+        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>3</Text>
       </View>
     </View>
   );
