@@ -22,7 +22,7 @@ const Trainings = () => {
         paddingRight: 20,
         paddingLeft: 20,
         paddingTop: 30,
-        backgroundColor: "white",
+        backgroundColor: "#f9f0e9",
         height: windowHeight,
         width: windowWidth,
       }}

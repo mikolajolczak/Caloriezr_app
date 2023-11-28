@@ -33,13 +33,21 @@ const Attributes = (props: AttributesData) => {
       <Text
         style={
           textData == null
-            ? { backgroundColor: props.color }
+            ? {
+                backgroundColor: props.color,
+                fontFamily: "Roboto-Regular",
+                fontSize: 14,
+                color: "#242424",
+              }
             : {
                 width: textData.width + 10,
                 height: textData.height,
                 backgroundColor: props.color,
                 borderRadius: 20,
                 paddingLeft: 5,
+                fontFamily: "Roboto-Regular",
+                fontSize: 14,
+                color: "#242424",
               }
         }
         onTextLayout={(e) => {
