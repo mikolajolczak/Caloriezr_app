@@ -20,19 +20,21 @@ import {
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { Camera, CameraType } from "expo-camera";
 import { BlurView } from "expo-blur";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 type cameraData = {
   toggleCamera: Function;
   toggleScanned: Function;
+  setProduct: Function;
 };
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const CameraView = (props: cameraData) => {
   const [scanned, setScanned] = useState(false);
-  const addToRecent = async (barcode) => {
+  const getProduct = async (password, email, barcode) => {
     try {
       const response = await fetch(
-        "https://shaped-glazing-402314.lm.r.appspot.com/add/recent",
+        "https://shaped-glazing-402314.lm.r.appspot.com/get/product/barcode",
         {
           method: "POST",
           headers: {
@@ -40,12 +42,42 @@ const CameraView = (props: cameraData) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id: 1,
+            password: password,
+            email: email,
             barcode: barcode,
           }),
         }
       );
       if (response.status == 200) {
+        const json = await response.json();
+        return await getProductInfo(password, email, json.Id);
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const getProductInfo = async (password, email, id) => {
+    try {
+      const response = await fetch(
+        "https://shaped-glazing-402314.lm.r.appspot.com/get/product/info",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            password: password,
+            email: email,
+            id: id,
+          }),
+        }
+      );
+      if (response.status == 200) {
+        const json = await response.json();
+        props.setProduct(json);
         return true;
       } else {
         return false;
@@ -54,9 +86,8 @@ const CameraView = (props: cameraData) => {
       console.error(error);
     }
   };
-
   const handleBarCodeScanned = ({ type, data }) => {
-    addToRecent(data).then((res) => {
+    getProduct(123, "molczak@wp.pl", data).then((res) => {
       if (res) {
         setScanned(true);
         props.toggleCamera(false);

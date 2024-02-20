@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -10,6 +10,8 @@ import {
   Dimensions,
   Button,
   Pressable,
+  Touchable,
+  TouchableOpacity,
 } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import MealList from "./MealList";
@@ -32,51 +34,101 @@ const fillArray = () => {
   }
   return output;
 };
-const Diagrams = () => {
+type DiagramsData = {
+  walks: any[];
+  trainings: any[];
+};
+const Diagrams = (props: DiagramsData) => {
+  const [curentType, setCurrentType] = useState(0);
+  const [diagramData, setDiagramData] = useState([0]);
+  useEffect(() => {
+    let diagramDataToReplace = [0];
+    let i = 0;
+    if (curentType == 0) {
+      props.walks.forEach((walk) => {
+        let hour = parseInt(
+          new Date(walk.Date_End).toLocaleTimeString().slice(0, -6)
+        );
+        if (hour <= i * 2) {
+          diagramDataToReplace[i] += walk.Steps;
+        } else {
+          while (hour > i * 2) {
+            diagramDataToReplace.push(0);
+            i++;
+          }
+          diagramDataToReplace[i] += walk.Steps;
+        }
+      });
+    }
+    if (curentType == 1) {
+      props.trainings.forEach((training) => {
+        let hour = parseInt(
+          new Date(training.Date_End).toLocaleTimeString().slice(0, -6)
+        );
+        let calories_loss = 0;
+        training.exercises.forEach((exercise) => {
+          calories_loss += exercise.Calories_Loss;
+        });
+        if (hour <= i * 2) {
+          diagramDataToReplace[i] += calories_loss;
+        } else {
+          while (hour > i * 2) {
+            diagramDataToReplace.push(0);
+            i++;
+          }
+          diagramDataToReplace[i] += calories_loss;
+        }
+      });
+    }
+
+    while (diagramDataToReplace.length < 12) {
+      diagramDataToReplace.push(0);
+    }
+    setDiagramData(diagramDataToReplace);
+  }, [curentType]);
   return (
     <View>
       <View
         style={{
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "space-around",
           alignItems: "center",
         }}
       >
-        <Text
-          style={{
-            fontSize: 20,
-            fontFamily: "Roboto-Regular",
-            color: "#2b9454",
-            paddingLeft: 15,
+        <TouchableOpacity
+          onPress={() => {
+            setCurrentType(0);
           }}
         >
-          Kroki
-        </Text>
+          <Text
+            style={{
+              fontSize: 20,
+              fontFamily: "Roboto-Regular",
+              color: curentType == 0 ? "#2b9454" : "#9a9a9a",
+              paddingLeft: 15,
+            }}
+          >
+            Kroki
+          </Text>
+        </TouchableOpacity>
         <View
           style={{ width: 1, backgroundColor: "#9a9a9a", height: 15 }}
         ></View>
-        <Text
-          style={{
-            fontSize: 20,
-            fontFamily: "Roboto-Regular",
-            color: "#9a9a9a",
+        <TouchableOpacity
+          onPress={() => {
+            setCurrentType(1);
           }}
         >
-          Spalone kcal
-        </Text>
-        <View
-          style={{ width: 1, backgroundColor: "#9a9a9a", height: 15 }}
-        ></View>
-        <Text
-          style={{
-            fontSize: 20,
-            fontFamily: "Roboto-Regular",
-            color: "#9a9a9a",
-            paddingRight: 15,
-          }}
-        >
-          Czas
-        </Text>
+          <Text
+            style={{
+              fontSize: 20,
+              fontFamily: "Roboto-Regular",
+              color: curentType == 1 ? "#2b9454" : "#9a9a9a",
+            }}
+          >
+            Spalone kcal
+          </Text>
+        </TouchableOpacity>
       </View>
       <View style={{ marginLeft: -20 }}>
         <LineChart
@@ -84,32 +136,7 @@ const Diagrams = () => {
             labels: fillArray(),
             datasets: [
               {
-                data: [
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                ],
+                data: diagramData,
               },
             ],
           }}

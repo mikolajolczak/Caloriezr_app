@@ -26,86 +26,60 @@ import * as Progress from "react-native-progress";
 import Attributes from "./Attributes";
 type productData = {
   details: Array<any>;
+  calories: any;
+  proteins: any;
+  carbs: any;
+  fats: any;
 };
 const Details = (props: productData) => {
-  const Tab = createMaterialTopTabNavigator();
   const [multiplier, setMultiplier] = useState(1);
   return (
     <View style={{ flexDirection: "column" }}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <TouchableOpacity
-          onPress={() => {
-            setMultiplier(1);
-          }}
-        >
-          <Text
-            style={{
-              color: multiplier == 1 ? "#2b9454" : "#9a9a9a",
-              fontFamily: "Roboto-Regular",
-              fontSize: 14,
-            }}
-          >
-            100g
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            setMultiplier(2);
-          }}
-        >
-          <Text
-            style={{
-              color: multiplier == 2 ? "#2b9454" : "#9a9a9a",
-              fontFamily: "Roboto-Regular",
-              fontSize: 14,
-            }}
-          >
-            1x szklanka
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            setMultiplier(0.5);
-          }}
-        >
-          <Text
-            style={{
-              color: multiplier == 0.5 ? "#2b9454" : "#9a9a9a",
-              fontFamily: "Roboto-Regular",
-              fontSize: 14,
-            }}
-          >
-            0.5x opakowanie
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            setMultiplier(0.25);
-          }}
-        >
-          <Text
-            style={{
-              color: multiplier == 0.25 ? "#2b9454" : "#9a9a9a",
-              fontFamily: "Roboto-Regular",
-              fontSize: 14,
-            }}
-          >
-            1x opakowanie
-          </Text>
-        </TouchableOpacity>
+        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>
+          Kalorie
+        </Text>
+        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>
+          {props.calories}
+        </Text>
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>
-          Wartość energetyczna (kcal)
+          Białko
         </Text>
-        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>3</Text>
+        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>
+          {props.proteins}
+        </Text>
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>
-          Wartość energetyczna (kcal)
+          Węglowodany
         </Text>
-        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>3</Text>
+        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>
+          {props.carbs}
+        </Text>
       </View>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>
+          Tłuszcze
+        </Text>
+        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>
+          {props.fats}
+        </Text>
+      </View>
+      {props.details.map((macro, index) => (
+        <View
+          style={{ flexDirection: "row", justifyContent: "space-between" }}
+          key={index}
+        >
+          <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>
+            {macro.Name + " " + (macro.Unit != null ? `(${macro.Unit})` : ``)}
+          </Text>
+          <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>
+            {macro.Value * multiplier}
+          </Text>
+        </View>
+      ))}
     </View>
   );
 };

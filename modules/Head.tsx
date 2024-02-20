@@ -1,6 +1,6 @@
-import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {SvgXml} from 'react-native-svg';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { SvgXml } from "react-native-svg";
 type Username = {
   name: string;
 };
@@ -12,37 +12,29 @@ const Head = (props: Username) => {
         <Text style={styles.hello}>Cześć! </Text>
         <Text style={styles.name}>{props.name}</Text>
       </View>
-      <SvgXml
-        xml={bellXml}
-        style={styles.bell}
-        width="80%"
-        height="70%"
-        stroke="grey"
-        fill="grey"
-      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
-  hello: {fontSize: 20, fontFamily: 'Roboto-Light', color: 'black'},
+  hello: { fontSize: 20, fontFamily: "Roboto-Light", color: "black" },
   name: {
-    color: '#2B9454',
+    color: "#2B9454",
     fontSize: 20,
-    fontFamily: 'Roboto-Bold',
+    fontFamily: "Roboto-Bold",
   },
   head: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingTop: 5,
     paddingBottom: 10,
   },
   bell: {
-    position: 'absolute',
+    position: "absolute",
     left: 200,
     top: 11.5,
   },

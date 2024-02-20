@@ -72,7 +72,7 @@ const Summary = (props: Data) => {
       <View style={styles.textStats}>
         <Text style={styles.unitText}>{props.description}</Text>
         <Text style={styles.currentValue}>
-          {props.current_value}/{"\n"}
+          {Math.round(props.current_value)}/{"\n"}
           {props.max_value}
           {props.unit}
         </Text>

@@ -33,18 +33,22 @@ import CameraView from "./CameraView";
 type scannerData = {
   toggleCamera: Function;
   toggleScanned: Function;
+  setProduct: Function;
+  setScanned: Function;
 };
 const Scaner = (props: scannerData) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-  const [username, setUsername] = useState(null);
+  const [recent, setRecent] = useState([]);
+  const [favourite, setFavourite] = useState([]);
   const [camera, setCamera] = useState(null);
   const [type, setType] = useState(CameraType.back);
   const [scanned, setScanned] = useState(false);
-  const getUserInformation = async () => {
+  const [firsttime, setFirstTime] = useState(true);
+  const getUserRecent = async (password, email) => {
     try {
       const response = await fetch(
-        "https://shaped-glazing-402314.lm.r.appspot.com/scaner",
+        "https://shaped-glazing-402314.lm.r.appspot.com/get/products/recent",
         {
           method: "POST",
           headers: {
@@ -52,18 +56,50 @@ const Scaner = (props: scannerData) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id: 1,
+            password: password,
+            email: email,
           }),
         }
       );
       const json = await response.json();
-      setUsername(json);
+      setRecent(json);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const getUserFavourite = async (password, email) => {
+    try {
+      const response = await fetch(
+        "https://shaped-glazing-402314.lm.r.appspot.com/get/products/favourite",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            password: password,
+            email: email,
+          }),
+        }
+      );
+      const json = await response.json();
+      setFavourite(json);
     } catch (error) {
       console.error(error);
     }
   };
   useEffect(() => {
-    getUserInformation();
+    const fetchData = async () => {
+      Promise.all([
+        getUserRecent(123, "molczak@wp.pl"),
+        getUserFavourite(123, "molczak@wp.pl"),
+      ]);
+    };
+    if (firsttime) {
+      fetchData();
+      setFirstTime(false);
+    }
   });
   return (
     <View
@@ -76,12 +112,18 @@ const Scaner = (props: scannerData) => {
         width: windowWidth,
       }}
     >
-      <SearchBar toggleCamera={props.toggleCamera} />
+      <SearchBar
+        toggleCamera={props.toggleCamera}
+        setProduct={props.setProduct}
+        setScanned={props.setScanned}
+      />
       <FoodList
-        recent={username == null ? [] : username.recent}
-        favourite={username == null ? [] : username.favourites}
-        getUserInformation={getUserInformation}
+        recent={recent}
+        favourite={favourite}
+        getFavouriteProducts={getUserFavourite}
+        getRecentProducts={getUserRecent}
         toggleScanned={props.toggleScanned}
+        setProduct={props.setProduct}
       />
     </View>
   );

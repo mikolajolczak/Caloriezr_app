@@ -1,11 +1,11 @@
-import React from 'react';
-import {View, Text, StyleSheet, Button, Pressable} from 'react-native';
-import Summary from './Summary';
-import {SvgXml, Path, Svg} from 'react-native-svg';
-import LinearGradient from 'react-native-linear-gradient';
+import React from "react";
+import { View, Text, StyleSheet, Button, Pressable } from "react-native";
+import Summary from "./Summary";
+import { SvgXml, Path, Svg } from "react-native-svg";
+import LinearGradient from "react-native-linear-gradient";
 
 type statisticsData = {
-  statistics: [];
+  statistics: any[];
 };
 
 const Statistics = (props: statisticsData) => {
@@ -15,37 +15,38 @@ const Statistics = (props: statisticsData) => {
     <View>
       <Text style={styles.title}>Kalorie i wartości odżywcze</Text>
       <View style={styles.wrapper}>
-        {props.statistics.map(summaryInfo => (
+        {props.statistics.map((summaryInfo, index) => (
           <Summary
+            key={index}
             max_value={summaryInfo.maxvalue}
             current_value={summaryInfo.value}
             description={summaryInfo.description}
             color={
-              summaryInfo.description == 'Kalorie'
-                ? '#BCE5C3'
-                : summaryInfo.description == 'Węgl.'
-                ? '#F8D0AC'
-                : summaryInfo.description == 'Białka'
-                ? '#AEF5ED'
-                : '#FABFFA'
+              summaryInfo.description == "Kalorie"
+                ? "#BCE5C3"
+                : summaryInfo.description == "Węgl."
+                ? "#F8D0AC"
+                : summaryInfo.description == "Białka"
+                ? "#AEF5ED"
+                : "#FABFFA"
             }
             secondary_color={
-              summaryInfo.description == 'Kalorie'
-                ? '#DDEADF'
-                : summaryInfo.description == 'Węgl.'
-                ? '#F7EDE5'
-                : summaryInfo.description == 'Białka'
-                ? '#E5F7F5'
-                : '#F9DCF9'
+              summaryInfo.description == "Kalorie"
+                ? "#DDEADF"
+                : summaryInfo.description == "Węgl."
+                ? "#F7EDE5"
+                : summaryInfo.description == "Białka"
+                ? "#E5F7F5"
+                : "#F9DCF9"
             }
             text_color={
-              summaryInfo.description == 'Kalorie'
-                ? '#2B9454'
-                : summaryInfo.description == 'Węgl.'
-                ? '#E66D00'
-                : summaryInfo.description == 'Białka'
-                ? '#01A2D6'
-                : '#DB3BDB'
+              summaryInfo.description == "Kalorie"
+                ? "#2B9454"
+                : summaryInfo.description == "Węgl."
+                ? "#E66D00"
+                : summaryInfo.description == "Białka"
+                ? "#01A2D6"
+                : "#DB3BDB"
             }
             unit={summaryInfo.unit}
           />
@@ -56,29 +57,29 @@ const Statistics = (props: statisticsData) => {
 };
 const styles = StyleSheet.create({
   wrapper: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   buttonContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 5,
   },
   addMealButton: {
-    flexDirection: 'row',
+    flexDirection: "row",
     width: 95,
     height: 25,
     borderRadius: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   addMealButtonText: {
     fontSize: 10,
-    color: 'white',
-    fontFamily: 'Roboto-Medium',
+    color: "white",
+    fontFamily: "Roboto-Medium",
   },
   settingsButtonText: {
     fontSize: 10,
-    color: 'black',
-    fontFamily: 'Roboto-Light',
+    color: "black",
+    fontFamily: "Roboto-Light",
   },
   plusSvg: {
     maxWidth: 9,
@@ -86,20 +87,20 @@ const styles = StyleSheet.create({
     marginLeft: 3,
   },
   settings: {
-    flexDirection: 'row',
+    flexDirection: "row",
     width: 95,
     height: 25,
     borderRadius: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginLeft: 10,
   },
-  gearSvG: {maxWidth: 10, maxHeight: 20, marginLeft: 5},
+  gearSvG: { maxWidth: 10, maxHeight: 20, marginLeft: 5 },
   title: {
     paddingBottom: 8,
-    color: 'black',
+    color: "black",
     fontSize: 16,
-    fontFamily: 'Roboto-Regular',
+    fontFamily: "Roboto-Regular",
   },
 });
 export default Statistics;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -9,26 +9,30 @@ import {
   View,
   Dimensions,
   Button,
-} from 'react-native';
+} from "react-native";
 
-import Head from './Head';
-import Feed from './Feed';
-import Achievements from './Achievements';
-import Statistics from './Statistics';
-import Calendar from './Calendar';
-import Foot from './Foot';
-import SearchBar from './SearchBar';
-import FoodList from './FoodList';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Ingredient from './Ingredient';
-const Ingredients = () => {
-  const windowWidth = Dimensions.get('window').width;
-  const windowHeight = Dimensions.get('window').height;
+import Head from "./Head";
+import Feed from "./Feed";
+import Achievements from "./Achievements";
+import Statistics from "./Statistics";
+import Calendar from "./Calendar";
+import Foot from "./Foot";
+import SearchBar from "./SearchBar";
+import FoodList from "./FoodList";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Ingredient from "./Ingredient";
+type IngredientsData = {
+  products: any[];
+  mealId: number;
+};
+const Ingredients = (props: IngredientsData) => {
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
   return (
     <View>
-      <Ingredient />
-      <Ingredient />
-      <Ingredient />
+      {props.products.map((product, index) => (
+        <Ingredient key={index} product={product} mealId={props.mealId} />
+      ))}
     </View>
   );
 };

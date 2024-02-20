@@ -10,12 +10,16 @@ import {
   Dimensions,
   Button,
   Pressable,
+  Animated,
+  TouchableOpacity,
+  Modal,
 } from "react-native";
 
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Product from "./Product";
 import { SvgXml } from "react-native-svg";
 import Ingredients from "./Ingredients";
+import ModalAddProduct from "./ModalAddProduct";
 let output = [];
 type MealData = {
   name: string;
@@ -24,26 +28,83 @@ type MealData = {
   fats: number;
   proteins: number;
   date: any;
+  products: any[];
+  mealId: number;
 };
 const Meal = (props: MealData) => {
   const chevronsvg = `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>`;
   const circleplussvg = `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><defs><linearGradient id="myGradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color: #33ba61; stop-opacity: 1" /><stop offset="100%" style="stop-color: #6AD3C7; stop-opacity: 1" /></linearGradient></defs><path fill="url(#myGradient)" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344V280H168c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V168c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H280v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>`;
-  const elipsissvg = `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 128 512"><defs><linearGradient id="myGradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color: #33ba61; stop-opacity: 1" /><stop offset="100%" style="stop-color: #6AD3C7; stop-opacity: 1" /></linearGradient></defs><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path fill="url(#myGradient)" d="M64 360a56 56 0 1 0 0 112 56 56 0 1 0 0-112zm0-160a56 56 0 1 0 0 112 56 56 0 1 0 0-112zM120 96A56 56 0 1 0 8 96a56 56 0 1 0 112 0z"/></svg>`;
+  const xmarksvg = `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>`;
   const [products, setProducts] = useState(false);
-  const getTimeFromDate = (date) => {
-    let timeWithSeconds = date
-      .toISOString()
-      .slice(
-        date.toISOString().indexOf("T") + 1,
-        date.toISOString().indexOf("Z")
+  const [addModalVisible, setAddModalVisible] = useState(false);
+  const spinValue = useState(new Animated.Value(0))[0];
+  const spinDeg = spinValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "180deg"],
+  });
+  const removeMeal = async (password, email, id) => {
+    let startOfTheWeek: Date;
+    let currentDay = new Date();
+    if (currentDay.getDay() == 1) {
+      startOfTheWeek = currentDay;
+    } else {
+      startOfTheWeek = new Date(
+        currentDay.getFullYear(),
+        currentDay.getMonth(),
+        currentDay.getDate() -
+          (currentDay.getDay() == 0
+            ? currentDay.getDay() + 6
+            : currentDay.getDay() - 1)
       );
-    return timeWithSeconds.slice(0, timeWithSeconds.indexOf(".") - 3);
+    }
+    try {
+      const response = await fetch(
+        "https://shaped-glazing-402314.lm.r.appspot.com/del/meal",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            password: password,
+            email: email,
+            id: id,
+          }),
+        }
+      );
+      if (response.status == 200) {
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
     <View>
+      <ModalAddProduct
+        setFirstTime={setAddModalVisible}
+        setModalVisible={setAddModalVisible}
+        modalVisible={addModalVisible}
+        mealId={props.mealId}
+      />
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <View>
-          <Pressable onPress={() => setProducts(!products)}>
+          <TouchableOpacity
+            onPress={() => {
+              if (products) {
+                Animated.spring(spinValue, {
+                  toValue: 0,
+                  useNativeDriver: true,
+                }).start();
+              } else {
+                Animated.spring(spinValue, {
+                  toValue: 1,
+                  useNativeDriver: true,
+                }).start();
+              }
+              setProducts(!products);
+            }}
+          >
             <View style={{ flexDirection: "row" }}>
               <Text
                 style={{
@@ -54,13 +115,17 @@ const Meal = (props: MealData) => {
               >
                 {props.name}
               </Text>
-
-              <View
+              <Animated.View
                 style={{
-                  width: 15,
-                  height: 15,
-                  paddingLeft: 5,
-                  paddingTop: 5,
+                  width: 10,
+                  height: 10,
+                  marginTop: 5,
+                  marginLeft: 5,
+                  transform: [
+                    {
+                      rotate: spinDeg,
+                    },
+                  ],
                 }}
               >
                 <SvgXml
@@ -70,9 +135,9 @@ const Meal = (props: MealData) => {
                   stroke="black"
                   fill="black"
                 ></SvgXml>
-              </View>
+              </Animated.View>
             </View>
-          </Pressable>
+          </TouchableOpacity>
           <View style={{ flexDirection: "row" }}>
             <View
               style={{
@@ -98,7 +163,7 @@ const Meal = (props: MealData) => {
                   fontSize: 10,
                 }}
               >
-                {props.calories}
+                {Math.round(props.calories)}
               </Text>
             </View>
             <View
@@ -125,7 +190,7 @@ const Meal = (props: MealData) => {
                   fontSize: 10,
                 }}
               >
-                {props.carbs}
+                {Math.round(props.carbs)}
               </Text>
             </View>
             <View
@@ -152,7 +217,7 @@ const Meal = (props: MealData) => {
                   fontSize: 10,
                 }}
               >
-                {props.proteins}
+                {Math.round(props.proteins)}
               </Text>
             </View>
             <View>
@@ -172,7 +237,7 @@ const Meal = (props: MealData) => {
                   fontSize: 10,
                 }}
               >
-                {props.fats}
+                {Math.round(props.fats)}
               </Text>
             </View>
           </View>
@@ -186,12 +251,12 @@ const Meal = (props: MealData) => {
               fontSize: 16,
             }}
           >
-            {getTimeFromDate(new Date(props.date))}
+            {new Date(props.date).toLocaleTimeString().slice(0, -3)}
           </Text>
           <View style={{ flexDirection: "row" }}>
             <Pressable
               onPress={() => {
-                console.log("3 kropki");
+                removeMeal(123, "molczak@wp.pl", props.mealId);
               }}
             >
               <View
@@ -203,17 +268,17 @@ const Meal = (props: MealData) => {
                 }}
               >
                 <SvgXml
-                  xml={elipsissvg}
+                  xml={xmarksvg}
                   width="100%"
                   height="100%"
-                  stroke="black"
-                  fill="black"
+                  stroke="red"
+                  fill="red"
                 ></SvgXml>
               </View>
             </Pressable>
             <Pressable
               onPress={() => {
-                console.log("dodaj produkt do posilku");
+                setAddModalVisible(true);
               }}
             >
               <View
@@ -235,7 +300,9 @@ const Meal = (props: MealData) => {
           </View>
         </View>
       </View>
-      {products ? <Ingredients /> : null}
+      {products ? (
+        <Ingredients products={props.products} mealId={props.mealId} />
+      ) : null}
     </View>
   );
 };

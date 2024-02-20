@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, lazy } from "react";
 import {
   View, Text
 } from "react-native";
@@ -14,6 +14,8 @@ import { Camera, CameraType } from 'expo-camera';
 import CameraView from "./modules/CameraView";
 import ProductDetails from "./modules/ProductDetails";
 import Trainings from "./modules/Trainings";
+import Settings from "./modules/Settings";
+import Login from "./modules/Login";
 const App = () => {
   const [fontsLoaded] = useFonts({
     "Roboto-Black": require("./assets/fonts/Roboto-Black.ttf"),
@@ -32,25 +34,32 @@ const App = () => {
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [isCamera, toggleCamera] = useState(false);
+  const [productInfo, setProductInfo] = useState({})
   const [initialScreen, setInitialScreen] = useState('scaner');
   const [isScanned, toggleScanned] = useState(false);
+  const [isLogged, toggleLogged] = useState(false);
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null)
   useEffect(() => {
       requestPermission()
     
   }, [isCamera])
   if (fontsLoaded) {
+    if (!isLogged) {
+      return <Login setLogged={toggleLogged} setEmail={setEmail} setPassword={setPassword}/>
+    }
     if (isCamera) { 
-      return <CameraView toggleCamera={toggleCamera} toggleScanned={toggleScanned} />;
+      return <CameraView toggleCamera={toggleCamera} toggleScanned={toggleScanned} setProduct={setProductInfo}/>;
     } if (isScanned) {
-      return <ProductDetails toggleScanned={toggleScanned}/>
+      return <ProductDetails toggleScanned={toggleScanned} product={productInfo}/>
     }
     else {
       return (
         <NavigationContainer>
-          <Tab.Navigator screenOptions={{ tabBarStyle: { paddingHorizontal: 25 }}} lazy={false}>
+          <Tab.Navigator screenOptions={{ tabBarStyle: barstyle, lazy: false}}>
             <Tab.Screen
               name="home"
-              component={Home}
+              children={() => <Home email={email} password={password}/>}
               options={{
                 tabBarShowLabel: true,
                 tabBarIcon: ({ focused, color }) => (
@@ -85,7 +94,7 @@ const App = () => {
             />
             <Tab.Screen
               name="scaner"
-              children={()=><Scaner toggleCamera={toggleCamera} toggleScanned={toggleScanned}/>}
+              children={() => <Scaner toggleCamera={toggleCamera} toggleScanned={toggleScanned} setProduct={setProductInfo} setScanned={toggleScanned}/>}
               options={{
                 headerShown: false,
                 tabBarShowLabel: true,
@@ -190,7 +199,7 @@ const App = () => {
             />
             <Tab.Screen
               name="settings"
-              children={()=><Scaner toggleCamera={toggleCamera}/>}
+              children={()=><Settings/>}
               options={{
                 headerShown: false,
                 tabBarShowLabel: true,

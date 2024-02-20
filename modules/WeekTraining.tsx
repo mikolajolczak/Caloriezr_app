@@ -51,7 +51,9 @@ const getDayOfTheWeek = (dayOfTheWeek: number) => {
   }
 };
 type weekData = {
+  walks: any[];
   username: JSON;
+  trainings: any[];
 };
 const WeekTraining = (props: weekData) => {
   const [firstTime, setFirstTime] = useState(true);
@@ -82,16 +84,31 @@ const WeekTraining = (props: weekData) => {
     }
 
     for (let i = 0; i < 7; i++) {
-      let currentDayMeals = [];
-
-      if (props.username != null) {
-        props.username.meals.every((meal) => {
+      let currentWalks = [];
+      let currentTrainings = [];
+      if (props.username != null && props.walks != null) {
+        props.walks.every((walk) => {
           if (
-            new Date(meal.Date).getDate() - 1 == startOfTheWeek.getDate() + i &&
-            new Date(meal.Date).getFullYear() == startOfTheWeek.getFullYear() &&
-            new Date(meal.Date).getMonth() == startOfTheWeek.getMonth()
+            new Date(walk.Date_End).getDate() == startOfTheWeek.getDate() + i &&
+            new Date(walk.Date_End).getFullYear() ==
+              startOfTheWeek.getFullYear() &&
+            new Date(walk.Date_End).getMonth() == startOfTheWeek.getMonth()
           ) {
-            currentDayMeals.push(meal);
+            currentWalks.push(walk);
+            return true;
+          } else {
+            return true;
+          }
+        });
+        props.trainings.every((training) => {
+          if (
+            new Date(training.Date_End).getDate() ==
+              startOfTheWeek.getDate() + i &&
+            new Date(training.Date_End).getFullYear() ==
+              startOfTheWeek.getFullYear() &&
+            new Date(training.Date_End).getMonth() == startOfTheWeek.getMonth()
+          ) {
+            currentTrainings.push(training);
             return true;
           } else {
             return true;
@@ -111,8 +128,17 @@ const WeekTraining = (props: weekData) => {
       }
       output[i] = (
         <Tab.Screen
+          key={i}
           name={"Day" + i.toString()}
-          children={() => <DayInfoTraining />}
+          children={() => (
+            <DayInfoTraining
+              steps={0}
+              maxsteps={0}
+              walks={currentWalks}
+              trainings={currentTrainings}
+              weeklywalks={props.walks}
+            />
+          )}
           options={{
             tabBarLabel: ({ focused, color }) => (
               <>

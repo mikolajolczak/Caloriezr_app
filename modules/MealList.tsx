@@ -25,6 +25,7 @@ import { Animated, TouchableOpacity } from "react-native";
 import Product from "./Product";
 import Meal from "./Meal";
 import Water from "./Water";
+import { MenuProvider } from "react-native-popup-menu";
 type MealListData = {
   currentDayMeals: any[];
 };
@@ -33,12 +34,15 @@ const MealList = (props: MealListData) => {
     <View style={{ marginBottom: 10 }}>
       {props.currentDayMeals.map((meal, index) => (
         <Meal
-          calories={meal.Calories}
-          name={meal.Name}
-          carbs={meal.Carbs}
-          fats={meal.Fats}
-          proteins={meal.Proteins}
+          calories={meal.calories}
+          name={meal.Description}
+          carbs={meal.carbs}
+          fats={meal.fats}
+          proteins={meal.proteins}
           date={meal.Date}
+          products={meal.products}
+          mealId={meal.Id}
+          key={index}
         />
       ))}
     </View>

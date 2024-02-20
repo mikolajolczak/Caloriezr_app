@@ -269,7 +269,6 @@ const Feed = (props: feedData) => {
         </View>
       </LinearGradient>
       <View style={styles.bottomfeed}>
-        <Text style={styles.weeklyReport}>Tygodniowy raport kroków</Text>
         <Pressable
           onPress={() => {
             props.setModalVisible(!props.modalVisible);

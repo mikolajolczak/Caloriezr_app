@@ -33,22 +33,27 @@ import Product from "./Product";
 import { MenuProvider } from "react-native-popup-menu";
 
 type listElements = {
-  elements: [];
-  getUserInformation: Function;
+  elements: any[];
+  getRecentProducts: Function;
+  getFavouriteProducts: Function;
   isFavourite: boolean;
   toggleScanned: Function;
+  setProduct: Function;
 };
 
 const List = (props: listElements) => {
   const Tab = createMaterialTopTabNavigator();
   return (
     <ScrollView style={{ flexGrow: 1, marginTop: 2.5 }}>
-      {props.elements.map((element) => (
+      {props.elements.map((element, index) => (
         <Product
           details={element}
-          getUserInformation={props.getUserInformation}
+          getRecentProducts={props.getRecentProducts}
+          getFavouriteProducts={props.getFavouriteProducts}
           isFavourite={props.isFavourite}
           toggleScanned={props.toggleScanned}
+          setProduct={props.setProduct}
+          key={index}
         />
       ))}
     </ScrollView>

@@ -19,7 +19,9 @@ import {
   Image,
   TouchableOpacity,
   ImageBackground,
+  Animated,
 } from "react-native";
+import { Buffer } from "buffer";
 import { SvgXml } from "react-native-svg";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { LinearGradient } from "expo-linear-gradient";
@@ -28,12 +30,21 @@ import Attributes from "./Attributes";
 import Details from "./Details";
 type productData = {
   toggleScanned: Function;
+  product: JSON;
+  firstTime: any;
 };
 const ProductDetails = (props: productData) => {
-  const addToFavourites = async (productName: string) => {
+  const [firsttime, setFirstTime] = useState(true);
+  const [ingredients, setIngredients] = useState("");
+  const [healthyIngredients, setHealthyIngredients] = useState([]);
+  const [safeIngredients, setSafeIngredients] = useState([]);
+  const [suspiciousIngredients, setSuspiciousIngredients] = useState([]);
+  const [dangerIngredients, setDangerIngredients] = useState([]);
+  const spinValue = useState(new Animated.Value(0))[0];
+  const addToFavourites = async (password, email, id) => {
     try {
       const response = await fetch(
-        "https://shaped-glazing-402314.lm.r.appspot.com/add/favourite",
+        "https://shaped-glazing-402314.lm.r.appspot.com/add/products/favourite",
         {
           method: "POST",
           headers: {
@@ -41,18 +52,93 @@ const ProductDetails = (props: productData) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id: 1,
-            name: productName,
+            password: password,
+            email: email,
+            id: id,
           }),
         }
       );
-      if (response.status) {
-        console.log("ok");
+      if (response.status == 200) {
       }
     } catch (error) {
       console.error(error);
     }
   };
+  const removeFromFavourites = async (password, email, id) => {
+    try {
+      const response = await fetch(
+        "https://shaped-glazing-402314.lm.r.appspot.com/del/products/favourite",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: id,
+            password: password,
+            email: email,
+          }),
+        }
+      );
+      if (response.status == 200) {
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const bufferToImg = (buffer) => {
+    const b64 = Buffer.from(buffer).toString("base64");
+    const mimeType = "image/png";
+    return `data:${mimeType};base64,${b64}`;
+  };
+  const getIngredients = (ingredients) => {
+    let result = "";
+    let healthy = [];
+    let safe = [];
+    let suspicious = [];
+    let danger = [];
+    ingredients.forEach((ingredient, index) => {
+      if (ingredient.Type_Name == "Zdrowe") {
+        healthy.push(
+          <Attributes text={ingredient.Name} color="#C9F7D9" key={index} />
+        );
+      }
+      if (ingredient.Type_Name == "Bezpieczne") {
+        safe.push(
+          <Attributes text={ingredient.Name} color="#F9E8A9" key={index} />
+        );
+      }
+      if (ingredient.Type_Name == "Podejrzane") {
+        suspicious.push(
+          <Attributes text={ingredient.Name} color="#F8CB96" key={index} />
+        );
+      }
+      if (ingredient.Type_Name == "Szkodliwe") {
+        danger.push(
+          <Attributes text={ingredient.Name} color="#E89797" key={index} />
+        );
+      }
+      result += ingredient.Name + ", ";
+    });
+    result = result.slice(0, -2);
+    setDangerIngredients(danger);
+    setHealthyIngredients(healthy);
+    setSuspiciousIngredients(suspicious);
+    setSafeIngredients(safe);
+    setIngredients(result);
+  };
+  const spinDeg = spinValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "180deg"],
+  });
+  useEffect(() => {
+    if (firsttime) {
+      getIngredients(props.product.Ingredients);
+      toggleFavourite(props.product.isFavourite);
+      setFirstTime(false);
+    }
+  }, []);
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const leftSvg = `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>`;
@@ -77,6 +163,7 @@ const ProductDetails = (props: productData) => {
             justifyContent: "space-between",
             alignItems: "center",
             borderBottomWidth: 1,
+            borderBlockColor: "#e8e5d9",
             paddingBottom: 15,
             paddingTop: 15,
           }}
@@ -98,11 +185,16 @@ const ProductDetails = (props: productData) => {
             </View>
           </TouchableOpacity>
           <Text style={{ fontFamily: "Roboto-Regular", fontSize: 24 }}>
-            Dzik Energy Mango
+            {props.product.Name}
           </Text>
           <TouchableOpacity
             onPress={() => {
-              toggleFavourite(!isFavourite);
+              toggleFavourite((oldValue) => !oldValue);
+              if (isFavourite) {
+                removeFromFavourites(123, "molczak@wp.pl", props.product.Id);
+              } else {
+                addToFavourites(123, "molczak@wp.pl", props.product.Id);
+              }
             }}
           >
             <View style={{ width: 30, height: 30, marginRight: 20 }}>
@@ -120,7 +212,7 @@ const ProductDetails = (props: productData) => {
       </View>
       <ScrollView>
         <ImageBackground
-          source={require("./png/png-transparent-spider-man-heroes-download-with-transparent-background-free-thumbnail.png")}
+          source={{ uri: bufferToImg(props.product.Image) }}
           style={{
             marginTop: 20,
             width: windowWidth - 40,
@@ -133,7 +225,7 @@ const ProductDetails = (props: productData) => {
             width: windowWidth - 40,
             height: 300,
             borderWidth: 5,
-            borderRadius: 20,
+            borderRadius: 40,
             borderColor: "#32B960",
           }}
         >
@@ -158,14 +250,14 @@ const ProductDetails = (props: productData) => {
             <Progress.Circle
               borderWidth={0}
               size={70}
-              progress={0.9}
+              progress={props.product.Score / 10}
               thickness={5}
               animated={false}
               strokeCap="square"
               color="#2b9454"
               showsText={true}
               formatText={(progress) => {
-                return "9.5";
+                return (progress.valueOf() * 10).toString();
               }}
               textStyle={{
                 color: "#2b9454",
@@ -185,28 +277,13 @@ const ProductDetails = (props: productData) => {
               fontSize: 18,
             }}
           >
-            Gazowany napój energetyczny o smaku mango i dużej zawarotści kofieny
-          </Text>
-          <Text
-            style={{
-              fontFamily: "Roboto-Bold",
-              fontSize: 16,
-              color: "#2b9454",
-              textAlign: "center",
-            }}
-          >
-            Dodaj produkt do posiłku
+            {props.product.Description}
           </Text>
           <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16 }}>
             Składniki:
           </Text>
           <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>
-            woda, kwas cytrynowy, dwutlenek węgla, tauryna (0.4%), cytrynian
-            sodu, aromaty, ekstrakt żeń-szenia (0.08%), sukraloza, acesulfam K,
-            winian L-karnitynyn (0.04%), kofeina (0.04%), chlorek sodu,
-            sorbinian potasu, benzoesan sodu, barwnik (karmel), niacyna,
-            witamina B6, ryboflawina, witamina B12, glukulonorakton, ekstrakt z
-            guarany (0.002%), inotyzol.
+            {ingredients}
           </Text>
           <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16 }}>
             Zdrowe
@@ -217,11 +294,7 @@ const ProductDetails = (props: productData) => {
               flexWrap: "wrap",
             }}
           >
-            <Attributes text="Woda" color="#C9F7D9"></Attributes>
-            <Attributes text="Woda" color="#C9F7D9"></Attributes>
-            <Attributes text="Woda" color="#C9F7D9"></Attributes>
-            <Attributes text="Woda" color="#C9F7D9"></Attributes>
-            <Attributes text="Woda" color="#C9F7D9"></Attributes>
+            {healthyIngredients}
           </View>
           <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16 }}>
             Bezpieczne
@@ -232,11 +305,7 @@ const ProductDetails = (props: productData) => {
               flexWrap: "wrap",
             }}
           >
-            <Attributes text="Woda" color="#F9E8A9"></Attributes>
-            <Attributes text="Woda" color="#F9E8A9"></Attributes>
-            <Attributes text="Woda" color="#F9E8A9"></Attributes>
-            <Attributes text="Woda" color="#F9E8A9"></Attributes>
-            <Attributes text="Woda" color="#F9E8A9"></Attributes>
+            {safeIngredients}
           </View>
           <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16 }}>
             Podejrzane
@@ -247,11 +316,7 @@ const ProductDetails = (props: productData) => {
               flexWrap: "wrap",
             }}
           >
-            <Attributes text="Woda" color="#F8CB96"></Attributes>
-            <Attributes text="Woda" color="#F8CB96"></Attributes>
-            <Attributes text="Woda" color="#F8CB96"></Attributes>
-            <Attributes text="Woda" color="#F8CB96"></Attributes>
-            <Attributes text="Woda" color="#F8CB96"></Attributes>
+            {suspiciousIngredients}
           </View>
           <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16 }}>
             Szkodliwe
@@ -262,14 +327,21 @@ const ProductDetails = (props: productData) => {
               flexWrap: "wrap",
             }}
           >
-            <Attributes text="Woda" color="#E89797"></Attributes>
-            <Attributes text="Woda" color="#E89797"></Attributes>
-            <Attributes text="Woda" color="#E89797"></Attributes>
-            <Attributes text="Woda" color="#E89797"></Attributes>
-            <Attributes text="Woda" color="#E89797"></Attributes>
+            {dangerIngredients}
           </View>
           <TouchableOpacity
             onPress={() => {
+              if (isDetails) {
+                Animated.spring(spinValue, {
+                  toValue: 0,
+                  useNativeDriver: true,
+                }).start();
+              } else {
+                Animated.spring(spinValue, {
+                  toValue: 1,
+                  useNativeDriver: true,
+                }).start();
+              }
               toggleDetails(!isDetails);
             }}
           >
@@ -283,7 +355,19 @@ const ProductDetails = (props: productData) => {
               >
                 Wartości odżywcze
               </Text>
-              <View style={{ width: 10, height: 10 }}>
+              <Animated.View
+                style={{
+                  width: 10,
+                  height: 10,
+                  marginTop: 5,
+                  marginLeft: 5,
+                  transform: [
+                    {
+                      rotate: spinDeg,
+                    },
+                  ],
+                }}
+              >
                 <SvgXml
                   xml={chevronsvg}
                   width="100%"
@@ -291,10 +375,20 @@ const ProductDetails = (props: productData) => {
                   stroke="black"
                   fill="black"
                 ></SvgXml>
-              </View>
+              </Animated.View>
             </View>
           </TouchableOpacity>
-          {isDetails ? <Details details={[]} /> : <></>}
+          {isDetails ? (
+            <Details
+              details={props.product.Macros}
+              calories={props.product.Calories}
+              proteins={props.product.Proteins}
+              carbs={props.product.Carbons}
+              fats={props.product.Fats}
+            />
+          ) : (
+            <></>
+          )}
         </View>
       </ScrollView>
     </View>

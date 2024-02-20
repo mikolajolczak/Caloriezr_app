@@ -51,6 +51,9 @@ const getDayOfTheWeek = (dayOfTheWeek: number) => {
 };
 type weekData = {
   username: JSON;
+  meals: any[];
+  waters: any[];
+  getUserWaters: Function;
 };
 const Week = (props: weekData) => {
   const [firstTime, setFirstTime] = useState(true);
@@ -82,15 +85,36 @@ const Week = (props: weekData) => {
 
     for (let i = 0; i < 7; i++) {
       let currentDayMeals = [];
-
+      let currentCalories = 0;
+      let currentProteins = 0;
+      let currentFats = 0;
+      let currentCarbs = 0;
+      let currentWater = 0;
       if (props.username != null) {
-        props.username.meals.every((meal) => {
+        props.meals.meals.every((meal) => {
           if (
-            new Date(meal.Date).getDate() - 1 == startOfTheWeek.getDate() + i &&
+            new Date(meal.Date).getDate() == startOfTheWeek.getDate() + i &&
             new Date(meal.Date).getFullYear() == startOfTheWeek.getFullYear() &&
             new Date(meal.Date).getMonth() == startOfTheWeek.getMonth()
           ) {
             currentDayMeals.push(meal);
+            currentCalories += meal.calories;
+            currentFats += meal.fats;
+            currentCarbs += meal.carbs;
+            currentProteins += meal.proteins;
+            return true;
+          } else {
+            return true;
+          }
+        });
+        props.waters.every((water) => {
+          if (
+            new Date(water.Date).getDate() == startOfTheWeek.getDate() + i &&
+            new Date(water.Date).getFullYear() ==
+              startOfTheWeek.getFullYear() &&
+            new Date(water.Date).getMonth() == startOfTheWeek.getMonth()
+          ) {
+            currentWater += water.Drunk_Water;
             return true;
           } else {
             return true;
@@ -111,8 +135,22 @@ const Week = (props: weekData) => {
       }
       output[i] = (
         <Tab.Screen
+          key={i}
           name={"Day" + i.toString()}
-          children={() => <DayInfo currentDayMeals={currentDayMeals} />}
+          children={() => (
+            <DayInfo
+              currentDayMeals={currentDayMeals}
+              waters={props.waters}
+              userInfo={props.username}
+              getUserWaters={props.getUserWaters}
+              key={i}
+              dailyCalories={currentCalories}
+              dailyCarbs={currentCarbs}
+              dailyFats={currentFats}
+              dailyProteins={currentProteins}
+              dailyWater={currentWater}
+            />
+          )}
           options={{
             tabBarLabel: ({ focused, color }) => (
               <>

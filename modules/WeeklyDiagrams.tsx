@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -10,6 +10,7 @@ import {
   Dimensions,
   Button,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import MealList from "./MealList";
@@ -25,71 +26,114 @@ import {
   ContributionGraph,
   StackedBarChart,
 } from "react-native-chart-kit";
-const fillArray = () => {
-  let output = [];
-  for (let i = 1; i <= 31; i += 2) {
-    output.push(i.toString());
-  }
-  return output;
+type WeeklyDiagramData = {
+  walks: any[];
+  trainings: any[];
 };
-const WeeklyDiagrams = () => {
-  const data = {
-    labels: ["16.11", "16.11", "16.11", "16.11", "16.11", "16.11"],
-    datasets: [
-      {
-        data: [20, 45, 28, 80, 99, 43],
-      },
-    ],
-  };
-
+const WeeklyDiagrams = (props: WeeklyDiagramData) => {
+  const [curentType, setCurrentType] = useState(0);
+  const [diagramData, setDiagramData] = useState([]);
+  const [weekDays, setWeekDays] = useState([]);
+  useEffect(() => {
+    let i = 0;
+    let j = 0;
+    let output = [0, 0, 0, 0, 0, 0, 0];
+    let currentDay = new Date();
+    let startOfTheWeek: Date;
+    let labels = [];
+    if (currentDay.getDay() == 1) {
+      startOfTheWeek = currentDay;
+    } else {
+      startOfTheWeek = new Date(
+        currentDay.getFullYear(),
+        currentDay.getMonth(),
+        currentDay.getDate() -
+          (currentDay.getDay() == 0
+            ? currentDay.getDay() + 6
+            : currentDay.getDay() - 1)
+      );
+    }
+    for (let i = 0; i < 7; i++) {
+      let day = new Date(
+        startOfTheWeek.getFullYear(),
+        startOfTheWeek.getMonth(),
+        startOfTheWeek.getDate() + i
+      );
+      labels.push(day.toLocaleDateString().slice(0, -5));
+    }
+    if (curentType == 0) {
+      props.walks.forEach((walk) => {
+        let date = new Date(walk.Date_End);
+        output[date.getDay() - startOfTheWeek.getDay()] += walk.Steps;
+      });
+    }
+    if (curentType == 1) {
+      props.trainings.forEach((training) => {
+        let date = new Date(training.Date_End);
+        let calories_loss = 0;
+        training.exercises.forEach((exercise) => {
+          calories_loss += exercise.Calories_Loss;
+        });
+        output[date.getDay() - startOfTheWeek.getDay()] += calories_loss;
+      });
+    }
+    setWeekDays(labels);
+    setDiagramData(output);
+  }, [curentType]);
   return (
     <View>
       <View
         style={{
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "space-around",
           alignItems: "center",
         }}
       >
-        <Text
-          style={{
-            fontSize: 20,
-            fontFamily: "Roboto-Regular",
-            color: "#2b9454",
-            paddingLeft: 15,
+        <TouchableOpacity
+          onPress={() => {
+            setCurrentType(0);
           }}
         >
-          Kroki
-        </Text>
+          <Text
+            style={{
+              fontSize: 20,
+              fontFamily: "Roboto-Regular",
+              color: curentType == 0 ? "#2b9454" : "#9a9a9a",
+              paddingLeft: 15,
+            }}
+          >
+            Kroki
+          </Text>
+        </TouchableOpacity>
         <View
           style={{ width: 1, backgroundColor: "#9a9a9a", height: 15 }}
         ></View>
-        <Text
-          style={{
-            fontSize: 20,
-            fontFamily: "Roboto-Regular",
-            color: "#9a9a9a",
+        <TouchableOpacity
+          onPress={() => {
+            setCurrentType(1);
           }}
         >
-          Spalone kcal
-        </Text>
-        <View
-          style={{ width: 1, backgroundColor: "#9a9a9a", height: 15 }}
-        ></View>
-        <Text
-          style={{
-            fontSize: 20,
-            fontFamily: "Roboto-Regular",
-            color: "#9a9a9a",
-            paddingRight: 15,
-          }}
-        >
-          Czas
-        </Text>
+          <Text
+            style={{
+              fontSize: 20,
+              fontFamily: "Roboto-Regular",
+              color: curentType == 1 ? "#2b9454" : "#9a9a9a",
+            }}
+          >
+            Spalone kcal
+          </Text>
+        </TouchableOpacity>
       </View>
       <View style={{ marginLeft: -35 }}>
         <BarChart
-          data={data}
+          data={{
+            labels: weekDays,
+            datasets: [
+              {
+                data: diagramData,
+              },
+            ],
+          }}
           width={Dimensions.get("window").width - 40}
           height={200}
           yAxisLabel="$"

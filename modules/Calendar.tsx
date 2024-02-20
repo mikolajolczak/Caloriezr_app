@@ -4,7 +4,7 @@ import CalendarEventFood from "./CalendarEventFood";
 import CalendarEventTraining from "./CalendarEventTraining";
 import Foot from "./Foot";
 type calendarInfo = {
-  events: [];
+  events: any[];
 };
 const Calendar = (props: calendarInfo) => {
   const scrollViewRef = useRef();
@@ -18,7 +18,7 @@ const Calendar = (props: calendarInfo) => {
   const updateOffset = (events: any) => {
     let offset = 0;
     events.forEach((event) => {
-      if (getCurrentTime() > event.timeofday) {
+      if (getCurrentTime() > event.Date) {
         offset += 130;
       } else {
         return offset;
@@ -49,26 +49,32 @@ const Calendar = (props: calendarInfo) => {
           event.typeofevent == "food" ? (
             <CalendarEventFood
               isFocused={
-                getCurrentTime() < event.timeofday &&
+                new Date().getTime() < new Date(event.Date).getTime() &&
                 (index > 0
-                  ? props.events[index - 1].timeofday < getCurrentTime()
+                  ? new Date(props.events[index - 1].Date).getTime() <
+                    new Date().getTime()
                   : true)
+                  ? true
+                  : index == props.events.length - 1
                   ? true
                   : false
               }
               eventData={event}
+              key={index}
             />
           ) : (
             <CalendarEventTraining
               isFocused={
-                getCurrentTime() < event.timeofday &&
+                new Date().getTime() < new Date(event.Date).getTime() &&
                 (index > 0
-                  ? props.events[index - 1].timeofday < getCurrentTime()
+                  ? new Date(props.events[index - 1].Date).getTime() <
+                    new Date().getTime()
                   : true)
                   ? true
                   : false
               }
               eventData={event}
+              key={index}
             />
           )
         )}

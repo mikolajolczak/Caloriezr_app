@@ -30,18 +30,14 @@ import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Animated, TouchableOpacity } from "react-native";
 import List from "./List";
-import {
-  Menu,
-  MenuProvider,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-} from "react-native-popup-menu";
+import { Menu, MenuProvider } from "react-native-popup-menu";
 type foodLists = {
-  recent: [];
-  favourite: [];
-  getUserInformation: Function;
+  recent: any[];
+  favourite: any[];
+  getRecentProducts: Function;
+  getFavouriteProducts: Function;
   toggleScanned: Function;
+  setProduct: Function;
 };
 const FoodList = (props: foodLists) => {
   const Tab = createMaterialTopTabNavigator();
@@ -78,9 +74,11 @@ const FoodList = (props: foodLists) => {
             children={() => (
               <List
                 elements={props.recent}
-                getUserInformation={props.getUserInformation}
+                getFavouriteProducts={props.getFavouriteProducts}
+                getRecentProducts={props.getRecentProducts}
                 isFavourite={false}
                 toggleScanned={props.toggleScanned}
+                setProduct={props.setProduct}
               />
             )}
             options={{
@@ -100,9 +98,11 @@ const FoodList = (props: foodLists) => {
             children={() => (
               <List
                 elements={props.favourite}
-                getUserInformation={props.getUserInformation}
+                getFavouriteProducts={props.getFavouriteProducts}
+                getRecentProducts={props.getRecentProducts}
                 isFavourite={true}
                 toggleScanned={props.toggleScanned}
+                setProduct={props.setProduct}
               />
             )}
             options={{

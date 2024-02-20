@@ -16,7 +16,11 @@ import MealList from "./MealList";
 import Water from "./Water";
 import Statistics from "./Statistics";
 import * as Progress from "react-native-progress";
-const Clocks = () => {
+type ClocksData = {
+  steps: number;
+  maxsteps: number;
+};
+const Clocks = (props: ClocksData) => {
   return (
     <View
       style={{
@@ -40,14 +44,14 @@ const Clocks = () => {
         <Progress.Circle
           borderWidth={0}
           size={100}
-          progress={0.9}
+          progress={props.steps / props.maxsteps}
           thickness={5}
           animated={false}
           strokeCap="square"
           color="#2b9454"
           showsText={true}
           formatText={(progress) => {
-            return "11743&KROKÓW";
+            return `${props.steps}&KROKÓW`;
           }}
           textStyle={{
             color: "#2b9454",

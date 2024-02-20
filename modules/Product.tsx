@@ -39,16 +39,18 @@ import {
 } from "react-native-popup-menu";
 type productInfo = {
   details: JSON;
-  getUserInformation: Function;
+  getRecentProducts: Function;
+  getFavouriteProducts: Function;
   isFavourite: boolean;
   toggleScanned: Function;
+  setProduct: Function;
 };
 
 const Product = (props: productInfo) => {
-  const removeFromRecent = async (productName: string) => {
+  const removeFromRecent = async (password, email, id) => {
     try {
       const response = await fetch(
-        "https://shaped-glazing-402314.lm.r.appspot.com/remove/recent",
+        "https://shaped-glazing-402314.lm.r.appspot.com/del/products/recent",
         {
           method: "POST",
           headers: {
@@ -56,22 +58,23 @@ const Product = (props: productInfo) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id: 1,
-            name: productName,
+            id: id,
+            password: password,
+            email: email,
           }),
         }
       );
       if (response.status == 200) {
-        props.getUserInformation();
+        props.getRecentProducts(password, email);
       }
     } catch (error) {
       console.error(error);
     }
   };
-  const removeFromFavourites = async (productName: string) => {
+  const removeFromFavourites = async (password, email, id) => {
     try {
       const response = await fetch(
-        "https://shaped-glazing-402314.lm.r.appspot.com/remove/favourite",
+        "https://shaped-glazing-402314.lm.r.appspot.com/del/products/favourite",
         {
           method: "POST",
           headers: {
@@ -79,22 +82,23 @@ const Product = (props: productInfo) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id: 1,
-            name: productName,
+            id: id,
+            password: password,
+            email: email,
           }),
         }
       );
       if (response.status == 200) {
-        props.getUserInformation();
+        props.getFavouriteProducts(password, email);
       }
     } catch (error) {
       console.error(error);
     }
   };
-  const addToFavourites = async (productName: string) => {
+  const addToFavourites = async (password, email, id) => {
     try {
       const response = await fetch(
-        "https://shaped-glazing-402314.lm.r.appspot.com/add/favourite",
+        "https://shaped-glazing-402314.lm.r.appspot.com/add/products/favourite",
         {
           method: "POST",
           headers: {
@@ -102,14 +106,41 @@ const Product = (props: productInfo) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id: 1,
-            name: productName,
+            password: password,
+            email: email,
+            id: id,
           }),
         }
       );
-      if (response.status) {
-        props.getUserInformation();
-        console.log("ok");
+      if (response.status == 200) {
+        props.getFavouriteProducts(password, email);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const getProductInfo = async (password, email, id) => {
+    try {
+      const response = await fetch(
+        "https://shaped-glazing-402314.lm.r.appspot.com/get/product/info",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            password: password,
+            email: email,
+            id: id,
+          }),
+        }
+      );
+      if (response.status == 200) {
+        const json = await response.json();
+        return json;
+      } else {
+        return {};
       }
     } catch (error) {
       console.error(error);
@@ -120,46 +151,57 @@ const Product = (props: productInfo) => {
     <View style={styles.wrapper}>
       <TouchableOpacity
         onPress={() => {
-          props.toggleScanned(true);
+          getProductInfo(123, "molczak@wp.pl", props.details.Product_Id).then(
+            (res) => {
+              props.setProduct(res);
+              props.toggleScanned(true);
+            }
+          );
         }}
       >
         <View style={styles.scoreContainer}>
           <Text
             style={[
-              parseFloat(props.details.score) > 7
+              parseFloat(props.details.Score) > 7
                 ? styles.greenScore
-                : parseFloat(props.details.score) < 3.5
+                : parseFloat(props.details.Score) < 3.5
                 ? styles.redScore
                 : styles.yellowScore,
             ]}
           >
-            {props.details.score}
+            {props.details.Score}
           </Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
-          props.toggleScanned(true);
+          getProductInfo(123, "molczak@wp.pl", props.details.Product_Id).then(
+            (res) => {
+              props.setProduct(res);
+              props.toggleScanned(true);
+            }
+          );
         }}
         style={styles.centerContainer}
       >
         <View style={styles.nameContainer}>
           <View>
-            <Text style={styles.nameName}>{props.details.name}</Text>
+            <Text style={styles.nameName}>{props.details.Name}</Text>
           </View>
           <View>
-            <Text style={styles.nameType}>{props.details.description}</Text>
+            <Text style={styles.nameType}>{props.details.Group_Name}</Text>
           </View>
         </View>
         <View style={styles.propertiesContainer}>
           <View>
             <Text style={styles.nameName}>
-              {props.details.sizeofproduct + props.details.unit}
+              {props.details.Size + props.details.Unit}
             </Text>
           </View>
           <View>
             <Text style={styles.nameType}>
-              {props.details.caloriesperhundred}kcal/100{props.details.unit}
+              {(props.details.Calories / props.details.Size) * 100}kcal/100
+              {props.details.Unit}
             </Text>
           </View>
         </View>
@@ -192,7 +234,7 @@ const Product = (props: productInfo) => {
             <MenuOption
               text="Dodaj do Ulubionych"
               onSelect={() => {
-                addToFavourites(props.details.name);
+                addToFavourites(123, "molczak@wp.pl", props.details.Product_Id);
               }}
             />
           )}
@@ -200,14 +242,22 @@ const Product = (props: productInfo) => {
             <MenuOption
               text="Usuń"
               onSelect={() => {
-                removeFromFavourites(props.details.name);
+                removeFromFavourites(
+                  123,
+                  "molczak@wp.pl",
+                  props.details.Product_Id
+                );
               }}
             />
           ) : (
             <MenuOption
               text="Usuń"
               onSelect={() => {
-                removeFromRecent(props.details.name);
+                removeFromRecent(
+                  123,
+                  "molczak@wp.pl",
+                  props.details.Product_Id
+                );
               }}
             />
           )}
